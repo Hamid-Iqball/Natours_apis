@@ -34,10 +34,28 @@ app.post('/api/v1/tours', (req,res)=>{
         })
     }
     )
+})
+
+//get one
+app.get('/api/v1/tours/:id', (req,res)=>{
+    const id = req.params.id*1
+    const tour = tours.find((el)=>el.id===id)
+
+    if(id>tours.length){
+        return res.status(401).json({
+            status:'fail',
+            message:"Invalid ID"
+        })
+    }
 
 
-    
 
+        res.status(200).json({
+        status:'success',
+        data:{
+            tour
+        }
+    })
 })
 
 const PORT =3000
