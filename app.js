@@ -4,13 +4,26 @@ const { get } = require("http")
 
 
 const app = express()
-app.use(express.json()) //middleware
+app.use(express.json()) 
+
+//middleware
+app.use((req,res,next)=>{
+console.log('Helo from the middleware 👋')
+next()
+})
+
+
+app.use((req,res,next)=>{
+    req.requestTime = new Date().toISOString();
+    next()
+})
 //In Node.js, __dirname is a global variable that represents the directory name of the current module (the current file being executed). It gives you the absolute path to the directory where the current script is located.
 const tours =JSON.parse( fs.readFileSync(`${__dirname}/dev-data/data/tours-simple.json`))
 
 const getAllTours =  (req,res)=>{
  res.status(200).json({
     status:'success',
+    requestedAt: req.requestTime,
     results:tours.length,
     data:{
         tours
@@ -47,8 +60,6 @@ const getSingleTour =(req,res)=>{
             message:"Invalid ID"
         })
     }
-
-
 
         res.status(200).json({
         status:'success',
