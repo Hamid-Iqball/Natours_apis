@@ -1,12 +1,18 @@
 const express = require("express")
 const fs = require("fs")
-const { get } = require("http")
+const morgan = require('morgan')
 
 
 const app = express()
-app.use(express.json()) 
+
+
 
 //middleware
+// this middleware is being used for the development
+app.use(morgan('dev'));
+
+app.use(express.json())
+
 app.use((req,res,next)=>{
 console.log('Helo from the middleware 👋')
 next()
