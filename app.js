@@ -9,7 +9,10 @@ const app = express()
 
 //middleware
 // this middleware is being used for the development
-app.use(morgan('dev'));
+if(process.env.NODE_ENV==='development'){
+    app.use(morgan('dev'));
+
+}
 
 app.use(express.json())
 
