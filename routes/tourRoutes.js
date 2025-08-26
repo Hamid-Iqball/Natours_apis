@@ -3,18 +3,18 @@ const tourController = require("./../controllers/tourControllers")
 
 
 const router = express.Router()
-const {getAllTours , createTour , getSingleTour , updateTour , deleteTour, checkID} = tourController
+const {getAllTours , createTour , getSingleTour , updateTour , deleteTour,} = tourController
 
 
 
 
 //param middleware to get rid of DRY
-router.param('id', checkID)
+// router.param('id', checkID)
 
 router
 .route('/')
 .get(getAllTours)
-.post(tourController.checkBody,createTour)
+.post(createTour)
 router
 .route('/:id')
 .get(getSingleTour)

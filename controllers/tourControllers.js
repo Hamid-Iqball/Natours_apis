@@ -1,83 +1,65 @@
-const fs = require('fs')
-
+const { status } = require('express/lib/response')
+const Tour = require('./../Models/tourModel')
 //In Node.js, __dirname is a global variable that represents the directory name of the current module (the current file being executed). It gives you the absolute path to the directory where the current script is located.
-const tours =JSON.parse( fs.readFileSync(`${__dirname}/../dev-data/data/tours-simple.json`))
+// const tours =JSON.parse( fs.readFileSync(`${__dirname}/../dev-data/data/tours-simple.json`))
 
 
 
-exports.checkID  =(req,res,next,id)=>{
-      if(req.params.id*1>tours.length){
-        return res.status(204).send().json({
-            status:'fail',
-            message:"Invalid ID"
+
+
+exports.getAllTours =  async (req,res)=>{
+
+    const tours =  await Tour.find({})
+   try{
+
+       res.status(200).json({
+           status:'success',
+           results:tours.length,
+           data:{tours}
+           
+        })
+    } catch(error){
+        res.status(500).json({
+            status:'error',
+            message:'error'
         })
     }
-    next()
 }
 
-
-exports.checkBody = (req,res,next)=>{
-    if(!req.body.name || !req.body.price){
-        return res.status(400).json({
-            status:'fail',
-            message:'Missing name or price'
-        })
-    }
-    next()
-}
-
-exports.getAllTours =  (req,res)=>{
- res.status(200).json({
-    status:'success',
-    requestedAt: req.requestTime,
-    results:tours.length,
-    data:{
-        tours
-    }
- })
-}
-
-exports.createTour =  (req,res)=>{
+exports.createTour = async (req,res)=>{
    
-    const newId = tours[tours.length-1].id+1
-    const newTour = Object.assign({id:newId}, req.body) //merging two objects
-    tours.push(newTour)
-
-    fs.writeFile(
-   `${__dirname}/dev-data/data/tours-simple.json`, JSON.stringify(tours),
-    err=>{
+    try{
+        const newTour =  await Tour.create(req.body) //Tour.create returns a promise but instead of using then methods we use async await  
         res.status(201).json({
-            status:"success",
+            status:'Success',
             data:{
                 tour:newTour
             }
         })
+    }catch(error){
+      res.status(400).json({
+        status:'fail',
+        message:"There is an error"
+      })
     }
-    )
 }
 
 exports.getSingleTour =(req,res)=>{
     const id = req.params.id*1
-    const tour = tours.find((el)=>el.id===id)
+   
 
 
         res.status(200).json({
         status:'success',
-        data:{
-            tour
-        }
+      
     })
 }
 
 //
 
 exports.updateTour = (req,res)=>{
-     if(req.params.id>tours.length){
-        return res.status(401).json({
-            status:'fail',
-            message:"Invalid ID"
-        })
-    }
+   
+    
 }
 
 
