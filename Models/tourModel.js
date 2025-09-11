@@ -61,10 +61,6 @@ const tourSchema = new mongoose.Schema(
 
     starteDate:[Date]
 
-
-
-
-
   },
 
 );
