@@ -9,18 +9,64 @@ const tourSchema = new mongoose.Schema(
       trim: true,
       minlength: [3, 'Name must be at least 3 characters'],
     },
-    rating: {
+    duration:{
+    type:Number,
+    required:[true,'A tour must have a duration']
+    },
+
+    maxGroupSize:{
+      type:Number,
+      required:[true, "A tour must have a group size"]
+    },
+
+    ratingsAverage: {
       type: Number,
       default: 4.5,
     },
+
+    ratingsQuantity:{
+      type:Number,
+      default:0      
+    },
+
     price: {
       type: Number,
       required: [true, 'A tour must have a price'],
     },
+
+    priveDiscount: Number,
+
+    summary:{
+      type:String,
+      required:[true,'A tour must have a description' ],
+      trim:true
+    },
+
+    description:{
+      type:String,
+      trim:true
+    },
+
+    imageCover:{
+      type:String,
+      required:[true, 'A tour must have a cover image']
+    },
+
+    images:[String],
+
+    createdAt:{
+      type:Date,
+      default:Date.now()
+    },
+
+    starteDate:[Date]
+
+
+
+
+
   },
-  {
-    strict: true, // Ignore fields not in schema
-  }
+
 );
 
 // 🔒 Ensure indexes are built (so unique actually works)
