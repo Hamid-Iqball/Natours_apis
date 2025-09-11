@@ -3,7 +3,7 @@ const tourController = require("./../controllers/tourControllers")
 
 
 const router = express.Router()
-const {getAllTours , createTour , getSingleTour , updateTour , deleteTour,} = tourController
+const {getAllTours , createTour , getSingleTour , updateTour , deleteTour} = tourController
 
 
 
