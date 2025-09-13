@@ -17,13 +17,12 @@ exports.getAllTours =  async (req,res)=>{
   
 
     // 2) Advanced Filtering
-    console.log(queryObj)
+    
+    let queryStr  = JSON.stringify(queryObj)
+    queryStr = queryStr.replace(/\b(gte|lte|lt|gt)\b/g, match=>`$${match}`)
+    console.log(JSON.parse(queryStr))
 
-      let queryStr  = JSON.stringify(queryObj)
-      queryStr = queryStr.replace(/\b(gte|lte|lt|gt)\b/g, match=>`$${match}`)
-      console.log(JSON.parse(queryStr))
-
-      const query =  await Tour.find(JSON.parse(queryStr))
+    const query =  await Tour.find(JSON.parse(queryStr))
 
       
     //  .where('duration').equals(req.query?.duration).where('difficulty').equals(req.query?.difficulty)
