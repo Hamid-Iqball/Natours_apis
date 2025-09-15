@@ -25,31 +25,46 @@ exports.getAllTours =  async (req,res)=>{
     let query =  Tour.find(JSON.parse(queryStr))// separate it because we can chain more methods to it and we will await it later.
 
 
-  //2) Sorting
+    // 2) Sorting
     if(req.query.sort) {  
     const sortBy = await req.query.sort.split(',').join(' ')
   
      query = query.sort(sortBy);  
     }else{
-     query = query.sort('-createdAt')
+     query = query.sort('-maxGroupSize')
     }
 
 
-  //3) Field Limit
-  if (req.query.fields) {
+   // 3) Field Limit
+    if (req.query.fields) {
 
-    const fields = req.query.fields.split(',').join(' ');
-    console.log(fields) 
-    query = query.select(fields);
-  } else {
-    query = query.select("-__v");
-  }
+      const fields = req.query.fields.split(',').join(' ');
+      console.log(fields) 
+      query = query.select(fields);
+    } else {
+      query = query.select("-__v");
+    }
+
 
     
+    // 4) Pagination
+    const page = req.query.page * 1 || 1;
+    const limit = req.query.limit * 1 || 100;
+    const skip = (page-1) * limit
+    
+    // page=2&limit=10, 1-10 page=1, 11-20 page=2, 21-30 page=3
+    query = query.skip(skip).limit(limit)
+
+    if(req.query.page){
+      const numTours = await Tour.countDocuments()
+      if(skip>=numTours){ throw new Error("This page does not exists ")}
+    }
+
 
 
     //Execute Query
     const tours = await query
+    
        res.status(200).json({
            status:'success',
            results:tours.length,
@@ -57,7 +72,7 @@ exports.getAllTours =  async (req,res)=>{
            
         })
     } catch(error){
-        res.status(500).json({
+        res.status(404).json({
             status:'error',
             message:error
         })
