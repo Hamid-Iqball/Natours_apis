@@ -3,8 +3,13 @@ const Tour = require('./../Models/tourModel')
 //In Node.js, __dirname is a global variable that represents the directory name of the current module (the current file being executed). It gives you the absolute path to the directory where the current script is located.
 // const tours =JSON.parse( fs.readFileSync(`${__dirname}/../dev-data/data/tours-simple.json`))
 
-
-
+//This middleware is for the purpose to modify the req or more specifically the route befroe getting all the tours
+exports.aliasTopTours = (req,res,next)=>{
+  req.query.limit = '5',
+  req.query.sort = '-ratingAverage,price',
+  req.query.fields = 'name,price,summary, ratingsAverage, diffculty',
+  next()
+}
 
 
 exports.getAllTours =  async (req,res)=>{
@@ -64,7 +69,7 @@ exports.getAllTours =  async (req,res)=>{
 
     //Execute Query
     const tours = await query
-    
+
        res.status(200).json({
            status:'success',
            results:tours.length,
