@@ -1,5 +1,6 @@
 const { status } = require('express/lib/response')
 const Tour = require('./../Models/tourModel')
+const APIFeatures  = require("./../utils/APIFeatures")
 //In Node.js, __dirname is a global variable that represents the directory name of the current module (the current file being executed). It gives you the absolute path to the directory where the current script is located.
 // const tours =JSON.parse( fs.readFileSync(`${__dirname}/../dev-data/data/tours-simple.json`))
 
@@ -12,63 +13,14 @@ exports.aliasTopTours = (req,res,next)=>{
 }
 
 
+
 exports.getAllTours =  async (req,res)=>{
 
   try{
-    // 1A) Filtering
-    const queryObj = {...req.query} // shallow copy of the object
-    const excludedField = ['page', 'sort','limit', 'fields']
-    excludedField.forEach(el=>delete queryObj[el])
-  
 
-    // 1B) Advanced Filtering
-    
-    let queryStr  = JSON.stringify(queryObj)
-    queryStr = queryStr.replace(/\b(gte|lte|lt|gt)\b/g, match=>`$${match}`)
-   
-
-    let query =  Tour.find(JSON.parse(queryStr))// separate it because we can chain more methods to it and we will await it later.
-
-
-    // 2) Sorting
-    if(req.query.sort) {  
-    const sortBy = await req.query.sort.split(',').join(' ')
-  
-     query = query.sort(sortBy);  
-    }else{
-     query = query.sort('-maxGroupSize')
-    }
-
-
-   // 3) Field Limit
-    if (req.query.fields) {
-
-      const fields = req.query.fields.split(',').join(' ');
-      console.log(fields) 
-      query = query.select(fields);
-    } else {
-      query = query.select("-__v");
-    }
-
-
-    
-    // 4) Pagination
-    const page = req.query.page * 1 || 1;
-    const limit = req.query.limit * 1 || 100;
-    const skip = (page-1) * limit
-    
-    // page=2&limit=10, 1-10 page=1, 11-20 page=2, 21-30 page=3
-    query = query.skip(skip).limit(limit)
-
-    if(req.query.page){
-      const numTours = await Tour.countDocuments()
-      if(skip>=numTours){ throw new Error("This page does not exists ")}
-    }
-
-
-
+    const features = new APIFeatures(Tour.find(),req.query).filter().sort().limitFields().pagination()
     //Execute Query
-    const tours = await query
+    const tours = await features.query
 
        res.status(200).json({
            status:'success',
