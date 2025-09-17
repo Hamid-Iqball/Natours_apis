@@ -11,6 +11,9 @@ const {getAllTours , createTour , getSingleTour , updateTour , deleteTour} = tou
 //param middleware to get rid of DRY
 // router.param('id', checkID)
 
+
+router.route('/tour_Stats').get(tourController.getTourStates)
+
 router.route("/top-5-cheap").get(tourController.aliasTopTours, tourController.getAllTours)
 
 router
