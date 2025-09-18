@@ -170,7 +170,41 @@ exports.getMonthlyPlan = async (req,res)=>{
 try {
 
   const year = req.params.year * 1;
-  const plan = await Tour.aggregate([])
+  const plan = await Tour.aggregate([
+    {
+      $unwind:'$startDates'
+    },
+    {
+      $match:{
+        startDates:{
+          $gte: new Date(`${year}-1-1`),
+          $lte: new Date(`${year}-12-31`)
+        }
+      }
+    },{
+      $group:{
+        _id: { $month: '$startDates'},
+        numTourStarts:{$sum:1},
+        tours: {$push:'$name'}
+      }
+    },
+    {
+      $addFields :{
+        month : '$_id'
+      }
+    },
+    {
+      $project:{ // it is used to show or not show tat field, 0 For not shown and 1 for shown.
+        _id:0
+      }
+    },
+
+    {
+      $sort:{
+        numTourStarts: -1
+      }
+    }
+  ])
 
   res.status(200).json({
     status:"success",
