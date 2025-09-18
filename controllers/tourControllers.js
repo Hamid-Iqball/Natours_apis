@@ -123,6 +123,7 @@ exports.deleteTour = async (req,res)=>{
   
 }
 
+// Aggregation pipeline
 exports.getTourStates = async (req,res)=>{
   try {
     const states = await Tour.aggregate([
@@ -131,7 +132,8 @@ exports.getTourStates = async (req,res)=>{
       },
       {
         $group:{
-          _id:null,
+          _id:"$difficulty",
+          numTours:{$sum:1},
           numRating:{$sum:'$ratingsAverage'},
           avgRating:{$avg:'$ratingsAverage'},
           avgPrice:{$avg:'$price'},
@@ -139,12 +141,18 @@ exports.getTourStates = async (req,res)=>{
           minPrice:{$min:'$price'},
           
         }
-      }
+      },
+      {
+        $sort:{avgPrice:1}
+      },
+      // {
+      //   $match:{_id :{$ne:"easy"}}
+      // }
     ]);
 
     res.status(200).json({
     status:"success",
-    data:states[0]
+    data:states
   })
   
   } catch (error) {
