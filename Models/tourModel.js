@@ -63,11 +63,19 @@ const tourSchema = new mongoose.Schema(
 
 
 
-  },
+  },{
+    toJSON:{virtuals:true},
+    toObject:{virtuals:true}
+  }
 
 );
 
-// 🔒 Ensure indexes are built (so unique actually works)
+
+tourSchema.virtual('durationWeeks').get(function(){
+  return this.duration/7
+})
+
+
 tourSchema.index({ name: 1 }, { unique: true });
 
 // 🚫 Optional: Add custom validator for friendlier error message
