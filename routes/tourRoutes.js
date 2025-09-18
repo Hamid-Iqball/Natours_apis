@@ -13,6 +13,7 @@ const {getAllTours , createTour , getSingleTour , updateTour , deleteTour} = tou
 
 
 router.route('/tour_Stats').get(tourController.getTourStates)
+router.route('/monthly_plan').get(tourController.getMonthlyPlan)
 
 router.route("/top-5-cheap").get(tourController.aliasTopTours, tourController.getAllTours)
 

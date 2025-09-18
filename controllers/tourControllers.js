@@ -152,7 +152,7 @@ exports.getTourStates = async (req,res)=>{
 
     res.status(200).json({
     status:"success",
-    data:states
+    data:{states}
   })
   
   } catch (error) {
@@ -161,4 +161,26 @@ exports.getTourStates = async (req,res)=>{
     message:error
   })
   }
+}
+
+
+
+// Aggregation pipeline: Unwinding
+exports.getMonthlyPlan = async (req,res)=>{
+try {
+
+  const year = req.params.year * 1;
+  const plan = await Tour.aggregate([])
+
+  res.status(200).json({
+    status:"success",
+    data:{plan}
+  })
+  
+} catch (error) {
+ res.status(404).json({
+    stat:"fail",
+    message:error
+  })
+}
 }
