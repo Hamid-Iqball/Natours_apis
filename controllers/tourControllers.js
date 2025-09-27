@@ -14,7 +14,7 @@ exports.aliasTopTours = (req,res,next)=>{
 }
 
 
-exports.getAllTours = catchAsync( async (req,res)=>{
+exports.getAllTours = catchAsync( async (req,res, next)=>{
 
     const features = new APIFeatures(Tour.find(),req.query).filter().sort().limitFields().pagination()
     //Execute Query
@@ -30,7 +30,7 @@ exports.getAllTours = catchAsync( async (req,res)=>{
 })
 
 
-exports.createTour = catchAsync(async (req,res)=>{
+exports.createTour = catchAsync(async(req,res,next)=>{
    
     const newTour =  await Tour.create(req.body) //Tour.create returns a promise but instead of using then methods we use async await  
         res.status(201).json({
@@ -41,7 +41,7 @@ exports.createTour = catchAsync(async (req,res)=>{
         })
 })
 
-exports.getSingleTour = catchAsync(async(req,res)=>{
+exports.getSingleTour = catchAsync(async(req,res,next)=>{
 
     const tour = await Tour.findById(req.params.id)
      res.status(200).json({
@@ -56,39 +56,32 @@ exports.getSingleTour = catchAsync(async(req,res)=>{
 
 //
 
-exports.updateTour = async (req, res) => {
-  try {
-    const tour = await Tour.findByIdAndUpdate(
-      req.params.id,
-      req.body,
-      {
-        new: true,          // return the updated doc, not the old one
-        runValidators: true // make mongoose validate before saving
-      }
-    );
-
-    if (!tour) {
-      return res.status(404).json({
-        status: "fail",
-        message: "No tour found with that ID"
-      });
+exports.updateTour = catchAsync(async(req, res,next) => {
+  const tour = await Tour.findByIdAndUpdate(
+    req.params.id,
+    req.body,
+    {
+      new: true, // return the updated doc, not the old one
+      runValidators: true, // make mongoose validate before saving
     }
+  );
 
-    res.status(200).json({
-      status: "success",
-      data: { tour }
-    });
-  } catch (error) {
-    res.status(400).json({
+  if (!tour) {
+    return res.status(404).json({
       status: "fail",
-      message: error.message
+      message: "No tour found with that ID",
     });
   }
-};
+
+  res.status(200).json({
+    status: "success",
+    data: { tour },
+  });
+});
 
 
 
-exports.deleteTour = catchAsync(async (req,res)=>{
+exports.deleteTour = catchAsync(async (req,res,next)=>{
 
  await Tour.findByIdAndDelete(req.params?.id)
  res.status(204).json({
@@ -100,7 +93,7 @@ exports.deleteTour = catchAsync(async (req,res)=>{
 })
 
 // Aggregation pipeline
-exports.getTourStates = catchAsync(async (req,res)=>{
+exports.getTourStates = catchAsync(async (req,res,next)=>{
 
     const states = await Tour.aggregate([
       {
@@ -137,7 +130,7 @@ exports.getTourStates = catchAsync(async (req,res)=>{
 
 
 // Aggregation pipeline: Unwinding
-exports.getMonthlyPlan = catchAsync(async (req,res)=>{
+exports.getMonthlyPlan = catchAsync(async (req,res,next)=>{
 
 
   const year = req.params.year * 1;
