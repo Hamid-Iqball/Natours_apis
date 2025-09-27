@@ -2,6 +2,7 @@ const { status } = require('express/lib/response')
 const Tour = require('./../Models/tourModel')
 const APIFeatures  = require("./../utils/APIFeatures")
 const catchAsync = require("../utils/catchAsync")
+const AppError = require('../utils/appError')
 //In Node.js, __dirname is a global variable that represents the directory name of the current module (the current file being executed). It gives you the absolute path to the directory where the current script is located.
 // const tours =JSON.parse( fs.readFileSync(`${__dirname}/../dev-data/data/tours-simple.json`))
 
@@ -43,7 +44,11 @@ exports.createTour = catchAsync(async(req,res,next)=>{
 
 exports.getSingleTour = catchAsync(async(req,res,next)=>{
 
-    const tour = await Tour.findById(req.params.id)
+
+  const tour = await Tour.findById(req.params.id)
+  if(!tour){
+   return next(new AppError('No Tour found with this ID', 404))
+  }
      res.status(200).json({
         status:"Success",
         data:{
@@ -66,11 +71,8 @@ exports.updateTour = catchAsync(async(req, res,next) => {
     }
   );
 
-  if (!tour) {
-    return res.status(404).json({
-      status: "fail",
-      message: "No tour found with that ID",
-    });
+ if(!tour){ 
+   return next(new AppError('No Tour found with this ID', 404))
   }
 
   res.status(200).json({
@@ -83,7 +85,13 @@ exports.updateTour = catchAsync(async(req, res,next) => {
 
 exports.deleteTour = catchAsync(async (req,res,next)=>{
 
- await Tour.findByIdAndDelete(req.params?.id)
+ const tour = await Tour.findByIdAndDelete(req.params?.id)
+
+ if(!tour){
+   return next(new AppError('No Tour found with this ID', 404))
+  }
+
+
  res.status(204).json({
   status:"success",
   data:null
