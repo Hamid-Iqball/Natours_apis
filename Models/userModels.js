@@ -1,35 +1,29 @@
-const validator  =  require('validator')
+const mongoose = require('mongoose');
+const validator = require('validator');
 
+const userSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: [true, 'Please tell us your name']
+  },
+  email: {  // Fixed typo here
+    type: String,
+    required: [true, 'Please provide your email'],
+    unique: true,
+    lowercase: true,
+    validate: [validator.isEmail, 'Please provide a valid email']
+  },
+  photo: String,
+  password: {
+    type: String,
+    required: [true, 'Please provide a password'],
+    minlength: [8, "A password must have at least eight characters"]  // Fixed validation rule here
+  },
+  passwordConfirm: {
+    type: String,
+    required: [true, 'Please confirm your password']
+  }
+}, { timestamps: true });  // Fixed timestamps option
 
-
-const mongoose = requrie("mongoose")
-
-const userSchema =new mongoose.schema({
-
-    name:{
-        type:String,
-        requried:[true,'Please tell us your name']
-    },
-    emial:{
-        type:String,
-        required:[true ,'Please provide your email' ],
-        unique:true ,
-        lowercase:true,
-        validate:[validator.isEmail, 'Please proivde a valid email']
-        
-    },
-    photo:String,
-    password:{
-        type:String,
-        requried:[true, 'Please provide a password'],
-        minLength:[3,"A password have atleast eight characters"]
-    },
-    passwordConfirm:{
-        type:password,
-        requried:[true , 'Please confirm your password']
-    }
-})
-
-
-const User = mongoose.model('user', userSchema) 
-module.exports = User
+const User = mongoose.model('User', userSchema);
+module.exports = User;
