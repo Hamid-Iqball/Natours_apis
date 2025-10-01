@@ -33,11 +33,13 @@ return new AppError(message, 400)
 }
 
 const handleDuplicateFieldsDB = (err) => {
-  console.log(err)
-  const value = Object.values(err.keyValue)[0];
-  const message = `${value} already exists. Please use another name!`;
+  console.log(err);
+  const field = Object.keys(err.keyValue)[0]; // Get the field name (e.g., 'email', 'username')
+  const value = Object.values(err.keyValue)[0]; // Get the duplicate value (e.g., 'example@gmail.com')
+  const message = `${field} (${value}) already exists. Please use another ${field}.`;
   return new AppError(message, 400);
 };
+
 
 const handleValidateErrorDB = (err)=>{
 
