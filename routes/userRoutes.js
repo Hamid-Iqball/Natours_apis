@@ -9,12 +9,12 @@ const {getAllUsers , createUser , getUser , updateUser,  deleteUser} = usercontr
 
 
 router.post('/singup' , authController.signUp)
+router.post("/login", authController.login)
 
 
 router
 .route("/")
 .get(getAllUsers).post(createUser)
-
 
 router
 .route("/:id")
