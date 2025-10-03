@@ -42,12 +42,15 @@ const handleDuplicateFieldsDB = (err) => {
 
 
 const handleValidateErrorDB = (err)=>{
-
   const errors  = Object.values(err.errors).map(el=>el.message)
   const message = `Invalidate Input data ${errors.join(',')}`
   return new AppError(message,400)
 }
 
+
+const handleJwtError  = (err)=>{
+ return new AppError('Invalid token, Please login again', 401)
+}
 
 module.exports = (err, req, res, next) => {
   err.statusCode = err.statusCode || 500;
@@ -61,12 +64,11 @@ module.exports = (err, req, res, next) => {
 
     error.message = err.message;
     error.name = err.name
-    
-
+  
     if (error.name === 'CastError') error = handleCastErrorDB(error);
     if(error.code===11000) error = handleDuplicateFieldsDB(error);
     if(error.name==='ValidationError') error = handleValidateErrorDB(error)
-
+    if(error.name==='JsonWebTokenError') error = handleJwtError(error)
     sednErrorProd(error, res);
   }
 };

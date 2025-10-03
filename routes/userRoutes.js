@@ -14,7 +14,7 @@ router.post("/login", authController.login)
 
 router
 .route("/")
-.get(getAllUsers).post(createUser)
+.get(authController.protect,getAllUsers).post(createUser)
 
 router
 .route("/:id")
