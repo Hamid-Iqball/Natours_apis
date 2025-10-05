@@ -9,7 +9,7 @@ const sendErrorDev = (err,res)=>{
         })
 }
 
-const sednErrorProd = (err,res)=>{
+const sendProdError = (err,res)=>{
         //Operational Error: Trusted Errors , send message to the  client
         if(err.isOperational){
             res.status(err.statusCode).json({
@@ -52,6 +52,11 @@ const handleJwtError  = (err)=>{
  return new AppError('Invalid token, Please login again', 401)
 }
 
+
+const handleExpiredJWTError = (err)=>{
+  return new AppError('Your token has expired, please login again', 401)
+}
+
 module.exports = (err, req, res, next) => {
   err.statusCode = err.statusCode || 500;
   err.status = err.status || 'error';
@@ -59,7 +64,7 @@ module.exports = (err, req, res, next) => {
   if (process.env.NODE_ENV === 'development') {
     sendErrorDev(err, res);
   } else if (process.env.NODE_ENV === 'production') {
-    // ✅ preserve message/name so custom handlers work
+    //  preserve message/name so custom handlers work
     let error = {...err}
 
     error.message = err.message;
@@ -69,6 +74,8 @@ module.exports = (err, req, res, next) => {
     if(error.code===11000) error = handleDuplicateFieldsDB(error);
     if(error.name==='ValidationError') error = handleValidateErrorDB(error)
     if(error.name==='JsonWebTokenError') error = handleJwtError(error)
-    sednErrorProd(error, res);
+    if(error.name==='TokenExpiredError') error = handleExpiredJWTError(error)
+
+    sendProdError(error, res)
   }
 };
