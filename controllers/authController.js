@@ -14,6 +14,8 @@ const signInToken = id =>{
   return token
 }
 
+
+
 exports.signUp = catchAsync(async(req,res,next)=>{
    const newUser = await User.create({
       name:req.body.name,
@@ -92,3 +94,16 @@ exports.protect = catchAsync(async (req, res, next) => {
   req.user = currentUser;
   next();
 });
+
+
+
+//We can not pass aruments in middleware directly so we wrape the whole middleware into another function and return that middleware then.
+exports.restrictTo  =  (...roles)=>{
+   return (req,res,next)=>{
+      if(!roles.includes(req.user.role)){ //['admin' , 'lead-guide'] not inclued 'user"
+         return next(new AppError("You do not have permission to perform this action"), 403)
+      }
+
+      next()
+   }
+}
