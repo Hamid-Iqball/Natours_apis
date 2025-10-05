@@ -8,14 +8,14 @@ const {getAllUsers , createUser , getUser , updateUser,  deleteUser} = usercontr
 
 
 
-router.post('/singup' , authController.signUp)
+router.post('/signUp' , authController.signUp)
 router.post("/login", authController.login)
 
 
 router
 .route("/")
-.get(authController.protect,getAllUsers).post(createUser)
-
+.post(createUser)
+.get(authController.protect,getAllUsers)
 router
 .route("/:id")
 .get(getUser)
