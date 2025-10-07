@@ -11,6 +11,7 @@ const {getAllUsers , createUser , getUser , updateUser,  deleteUser} = usercontr
 router.post('/signUp' , authController.signUp)
 router.post("/login", authController.login)
 
+router.post("/forgotPassword",  authController.forgotPassword)
 
 router
 .route("/")
@@ -21,7 +22,7 @@ router
 .get(getUser)
 .patch(updateUser)
 .delete(authController.protect,
-     authController.restrictTo('admin' , 'lead-guide') , 
-deleteUser)
+      authController.restrictTo('admin' , 'lead-guide'), 
+      deleteUser)
 
 module.exports = router
