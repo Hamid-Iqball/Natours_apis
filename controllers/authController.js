@@ -21,8 +21,7 @@ const signInToken = id =>{
 const createSendToken  =(user,statusCode, res)=>{
    const token  = signInToken(user._id)
 
-
- res.status(statusCode).json({
+  res.status(statusCode).json({
     status:'sucess',
     token:token,
     data:{
@@ -49,17 +48,17 @@ exports.signUp = catchAsync(async(req,res,next)=>{
 exports.login = catchAsync(async (req, res, next) => {
    const { email, password } = req.body;
 
-   // 1) Check if email and password exist
-   if (!email || !password) {
-      return next(new AppError("Please provide email and password", 400));
-   }
+      // 1) Check if email and password exist
+      if (!email || !password) {
+         return next(new AppError("Please provide email and password", 400));
+      }
 
-   // 2) Check if user exists & password is correct (confirm password)
-   const user = await User.findOne({ email }).select('+password');
+      // 2) Check if user exists & password is correct (confirm password)
+      const user = await User.findOne({ email }).select('+password');
 
-   if (!user || !(await user.correctPassword(password, user.password))) {
-      return next(new AppError("Incorrect email or password", 401));
-   }
+      if (!user || !(await user.correctPassword(password, user.password))) {
+         return next(new AppError("Incorrect email or password", 401));
+      }
 
    // 3) If everything is ok, send token
 
@@ -72,31 +71,31 @@ exports.login = catchAsync(async (req, res, next) => {
 
 exports.protect = catchAsync(async (req, res, next) => {
   // 1) Getting token and checking if it’s there
-  let token;
-  if (req.headers.authorization && req.headers.authorization.startsWith('Bearer ')) {
-    token = req.headers.authorization.split(' ')[1];
-  }
+      let token;
+         if (req.headers.authorization && req.headers.authorization.startsWith('Bearer ')) {
+            token = req.headers.authorization.split(' ')[1];
+         }
 
-  if (!token) {
-    return next(new AppError('You are not logged in! Please log in to get access', 401));
-  }
+         if (!token) {
+            return next(new AppError('You are not logged in! Please log in to get access', 401));
+         }
 
-  // 2) Verification token
-  const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
+      // 2) Verification token
+      const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
 
-  // 3) Check if user still exists
-  const currentUser = await User.findById(decoded.id);
-  if (!currentUser) {
-    return next(new AppError('The user belonging to this token no longer exists.', 404));
-  }
+      // 3) Check if user still exists
+      const currentUser = await User.findById(decoded.id);
+         if (!currentUser) {
+            return next(new AppError('The user belonging to this token no longer exists.', 404));
+         }
 
-  // 4) Check if user changed password after the token was issued
-  if(currentUser.changedPasswordAfter(decoded.iat)){
-   return next(new AppError("User recently changed password! please login again", 401))
-  }
-  // 5) Grant access to protected route
-  req.user = currentUser;
-  next();
+      // 4) Check if user changed password after the token was issued
+         if(currentUser.changedPasswordAfter(decoded.iat)){
+            return next(new AppError("User recently changed password! please login again", 401))
+         }
+      // 5) Grant access to protected route
+      req.user = currentUser;
+      next();
 });
 
 
@@ -162,7 +161,8 @@ exports.forgotPassword = catchAsync(async(req,res,next)=>{
 
 
 exports.resetPassword = catchAsync(async(req,res,next)=>{
-   //1) Get User Based in the token
+
+//1) Get User Based in the token
 
    const hashedToken = crypto.createHash('sha256').update(req.params.token).digest('hex')
 
@@ -172,11 +172,11 @@ exports.resetPassword = catchAsync(async(req,res,next)=>{
    if(!user){
       return next(new AppError('Token is invalid or has expired', 400))
    }
-   user.password = req.body.password;
-   user.passwordConfirm=req.body.passwordConfirm;
-   user.passwordResetToken = undefined
-   user.passwordResetExpires = undefined
-   await user.save()  //Actually write those changes back to the database
+      user.password = req.body.password;
+      user.passwordConfirm=req.body.passwordConfirm;
+      user.passwordResetToken = undefined
+      user.passwordResetExpires = undefined
+      await user.save()  //Actually write those changes back to the database
    //3) Update changedPasswordAt property for the user
    //4) Log the user in, send JWT
 
@@ -186,19 +186,19 @@ exports.resetPassword = catchAsync(async(req,res,next)=>{
 
 
 exports.updatePassword = catchAsync(async(req,res,next)=>{
-   const {password} =req.body
+   const {passwordCurrent} =req.body
    // 1) Get user from the collection
 
    const user = await User.findById(req.user.id).select('+password')// the user.id will already be on the protect middleware
 
    //2) Check if POSTED  current password is correct
-   if(!(await user || user.correctPassword(password, user.password))){
+   if(!(await user || user.correctPassword(passwordCurrent, user.password))){
       return next(new AppError('Your current password is wrong', 401))
    }
    
    // 3) If so, Update the passowrd
    user.password = req.body.password
-   yser.passwordConfirm=req.body.passwordConfirm
+   user.passwordConfirm=req.body.passwordConfirm
    // User.findByIdAndUpdate will not work as intended! why?? 
    await user.save()
 
