@@ -1,7 +1,8 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
 const bcrypt = require('bcryptjs')
-const crypto = require('crypto')
+const crypto = require('crypto');
+const { type } = require('os');
 
 
 
@@ -45,7 +46,14 @@ const userSchema = new mongoose.Schema({
 
     passwordChangedAt : Date,
     passwordResetToken:String,
-    passwordResetExpires:Date
+    passwordResetExpires:Date,
+    // for deactivating user
+    active:{
+      type:Boolean,
+      default:true,
+      select:false
+
+    }
 });  // Fixed timestamps option
 
 
@@ -103,7 +111,7 @@ userSchema.methods.createPasswordResetToken = function(){
   return resetToken;
 }
 
-
+//Query middleware
 userSchema.pre('save', function(next){
   if(!this.isModified('password') || this.isNew) return next()
 
@@ -111,6 +119,14 @@ userSchema.pre('save', function(next){
     next() 
 ;
 })
+
+ userSchema.pre(/^find/, function(next){
+  
+  // all the documents that are not active should not be shown
+  this.find({active:{$ne :false}})
+  next()
+
+ })
 
 
 

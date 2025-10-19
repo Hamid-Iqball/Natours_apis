@@ -15,6 +15,7 @@ router.post("/forgotPassword",  authController.forgotPassword)
 router.patch("/resetPassword/:token",  authController.resetPassword)
 router.patch("/updateMyPassword",authController.protect, authController.updatePassword)
 router.patch("/updateMe",authController.protect, usercontroller.updateMe)
+router.delete("/deleteMe", authController.protect,  usercontroller.deleteMe )
 
 
 router
