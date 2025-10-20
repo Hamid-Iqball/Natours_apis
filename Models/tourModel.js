@@ -95,7 +95,34 @@ const tourSchema = new mongoose.Schema(
     secretTour: {
       type: Boolean,
       default: false
+    },
+    
+    //This is not a schema type object, but rather an embedded object inside which we are going to define types
+    startLocation:{
+      //GeoJSON
+      type:{
+        type:String,
+        default:'Point',
+        enum:['Point']
+      },
+      coordinates:[Number],
+      address:String,
+      description:String
+    },
+    //Inorder to create new documents and embed them into another document we need an array  
+    locations:[ 
+    {
+       type:{
+        type:String,
+        default:'Point',
+        enum:['Point']
+      },
+      coordinates:[Number],
+      address:String,
+      description:String,
+      day:Number
     }
+  ]
   },
   {
     toJSON: { virtuals: true },
@@ -109,7 +136,7 @@ const tourSchema = new mongoose.Schema(
 tourSchema.index({ name: 1 }, { unique: true });
 
 // -----------------------------
-// Virtuals
+// Virtuals: Virtuals don’t exist in the database — they only exist in your app
 // -----------------------------
 tourSchema.virtual('durationWeeks').get(function () {
   return this.duration / 7;
