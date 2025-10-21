@@ -7,9 +7,10 @@ const xss = require('xss-clean')
 
 
 
+const AppError =  require("./utils/appError")
 const tourRouter = require("./routes/tourRoutes")
 const userRouter = require('./routes/userRoutes')
-const AppError =  require("./utils/appError")
+const reviewRouter = require("./routes/reviewRoutes")
 const globalErrorHandler = require("./controllers/errorControllers")
 const { default: helmet } = require("helmet")
 
@@ -60,7 +61,8 @@ app.use((req,res,next)=>{
 
 // This is declaring the routes
 app.use('/api/v1/tours', tourRouter)
-app.use('/api/v1/user', userRouter)
+app.use('/api/v1/user', userRouter )
+app.use('/api/v1/reviews', reviewRouter)
 
 //This is the middleware for the unhandled routes
 app.all('*', (req,res,next)=>{
