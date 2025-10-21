@@ -205,6 +205,14 @@ tourSchema.pre('aggregate', function (next) {
   next();
 });
 
+//virtual populate
+// Virtual populate: solution to child refrenece
+tourSchema.virtual('reviews', {
+  ref: 'Review',
+  foreignField: 'tour',
+  localField: '_id'
+});
+
 // -----------------------------
 // Model
 // -----------------------------
