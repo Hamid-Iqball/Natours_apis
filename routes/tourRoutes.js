@@ -1,7 +1,7 @@
 const express  = require('express')
 const tourController = require("./../controllers/tourControllers")
 const authController = require("./../controllers/authController")
-const reviewController = require("./../controllers/reviewController")
+const reviewRouter = require("./../routes/reviewRoutes")
 
 
 const router = express.Router()
@@ -12,6 +12,13 @@ const {getAllTours , createTour , getSingleTour , updateTour , deleteTour} = tou
 
 //param middleware to get rid of DRY
 // router.param('id', checkID)
+
+
+//nested routes, 
+//POST/tour/234fad4/reviews, did a blody error here
+// router.route('/:tourId/reviews').post(authController.protect, authController.restrictTo('user'), reviewController.createReview)
+
+router.use("/:tourId/reviews", reviewRouter) //mounting the router
 
 
 router.route('/tour_Stats').get(tourController.getTourStates)
@@ -29,7 +36,6 @@ router
 .patch(updateTour)
 .delete(deleteTour)
 
-//nested routes
-router.route('/:tourId/reviews', authController.protect,  authController.restrictTo('user'), reviewController.createReview )
+
 
 module.exports = router
