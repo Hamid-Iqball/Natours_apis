@@ -1,5 +1,7 @@
 const express  = require('express')
 const tourController = require("./../controllers/tourControllers")
+const authController = require("./../controllers/authController")
+const reviewController = require("./../controllers/reviewController")
 
 
 const router = express.Router()
@@ -27,5 +29,7 @@ router
 .patch(updateTour)
 .delete(deleteTour)
 
+//nested routes
+router.route('/:tourId/reviews', authController.protect,  authController.restrictTo('user'), reviewController.createReview )
 
 module.exports = router
