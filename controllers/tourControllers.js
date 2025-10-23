@@ -32,16 +32,9 @@ exports.getAllTours = catchAsync( async (req,res, next)=>{
 })
 
 
-exports.createTour = catchAsync(async(req,res,next)=>{
-   
-    const newTour =  await Tour.create(req.body) //Tour.create returns a promise but instead of using then methods we use async await  
-        res.status(201).json({
-            status:'Success',
-            data:{
-                tour:newTour
-            }
-        })
-})
+exports.createTour = factory.createOne(Tour)
+exports.updateTour = factory.updateOne(Tour)
+exports.deleteTour = factory.deleteOne(Tour)
 
 exports.getSingleTour = catchAsync(async(req,res,next)=>{
 
@@ -56,14 +49,10 @@ exports.getSingleTour = catchAsync(async(req,res,next)=>{
             tour
         }
      })
-   
-   
 })
 
 //
 
-exports.updateToue = factory.updateOne(Tour)
-exports.deleteTour = factory.deleteOne(Tour)
 
 // Aggregation pipeline
 exports.getTourStates = catchAsync(async (req,res,next)=>{

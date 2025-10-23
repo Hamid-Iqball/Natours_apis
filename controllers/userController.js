@@ -4,7 +4,7 @@ const catchAsync = require("../utils/catchAsync")
 const factory  =require("./handlerFactory")
 
 const filterObj = (obj, ...allowedFields)=>{
-    const newObj = {}
+const newObj = {}
   Object.keys(obj).forEach(el=>{
     if(allowedFields.includes(el)) newObj[el] = obj[el]
   })
@@ -54,21 +54,12 @@ exports.deleteMe  =catchAsync(async (req,res,next)=>{
         status:'success'
     })
 })
-exports.createUser = (req,res)=>{
- res.status(500).json({
-        status:'error',
-        message:'This route is not yet defined'
-    })
-}
-exports. getUser = (req,res)=>{
- res.status(500).json({
-        status:'error',
-        message:'This route is not yet defined'
-    })
-}
+// exports.createUser = factory.createOne(User)
+// exports.getUser = factory.getOne(User)
 
 
 
 //Do not update passwords with this
+
 exports.updateUser = factory.updateOne(User)
 exports.deleteUser = factory.deleteOne(User)

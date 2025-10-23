@@ -1,10 +1,12 @@
 const express  =require('express')
 const usercontroller = require('../controllers/userController')
 const authController = require('../controllers/authController')
+// const factory = require("../controllers/handlerFactory")
 
 const router  =express.Router()
 
-const {getAllUsers , createUser , getUser , updateUser,  deleteUser} = usercontroller
+
+
 
 
 
@@ -20,14 +22,14 @@ router.delete("/deleteMe", authController.protect,  usercontroller.deleteMe )
 
 router
 .route("/")
-.post(createUser)
-.get(authController.protect,getAllUsers)
+// .post(usercontroller.createUser)  // commented out - function not implemented
+.get(authController.protect,usercontroller.getAllUsers)
 router
 .route("/:id")
-.get(getUser)
-.patch(updateUser)
+// .get(usercontroller.getUser)  // commented out - function not implemented
+.patch(usercontroller.updateUser)
 .delete(authController.protect,
       authController.restrictTo('admin' , 'lead-guide'), 
-      deleteUser)
+      usercontroller.deleteUser)  // commented out - function not implemented
 
 module.exports = router

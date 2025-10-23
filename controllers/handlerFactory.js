@@ -1,9 +1,29 @@
+
 const AppError = require("../utils/appError")
 const catchAsync = require("../utils/catchAsync")
 
 
 
 //clousers:The inner function will have the access to the variable the outer function
+
+
+exports.createOne = Model =>catchAsync(async (req,res,next)=>{
+
+    const doc =  await Model.create(req.body)   
+            res.status(201).json({
+                status:'Success',
+                    data:{doc}
+                
+            })
+})
+
+
+
+
+
+
+
+
 exports.deleteOne = Model =>catchAsync(async (req,res,next)=>{
     
      const tour = await Model.findByIdAndDelete(req.params?.id)
@@ -22,23 +42,27 @@ exports.deleteOne = Model =>catchAsync(async (req,res,next)=>{
     })
 
 
-    
-   exports.updateOne = Model =>catchAsync(async(req,res,next)=>{
-     const doc = await Model.findByIdAndUpdate(
-    req.params.id,
-    req.body,
-    {
-      new: true, // return the updated doc, not the old one
-      runValidators: true, // make mongoose validate before saving
+exports.updateOne = Model =>
+  catchAsync(async (req, res, next) => {
+    const doc = await Model.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
+
+    if (!doc) {
+      return next(new AppError('No document found with that ID', 404));
     }
-  );
 
- if(!doc){ 
-   return next(new AppError('No Tour found with this ID', 404))
-  }
-
-  res.status(200).json({
-    status: "success",
-    data: { doc },
+    res.status(200).json({
+      status: 'success',
+      data: { doc },
+    });
   });
-   })
+
+
+
+// for create

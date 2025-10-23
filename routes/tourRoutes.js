@@ -5,7 +5,7 @@ const reviewRouter = require("./../routes/reviewRoutes")
 
 
 const router = express.Router()
-const {getAllTours , createTour , getSingleTour , updateTour , deleteTour} = tourController
+
 
 
 
@@ -28,13 +28,14 @@ router.route("/top-5-cheap").get(tourController.aliasTopTours, tourController.ge
 
 router
 .route('/')
-.get(getAllTours)
-.post(createTour)
+.get(tourController.getAllTours)
+.post(tourController.createTour)
+
 router
 .route('/:id')
-.get(getSingleTour)
-.patch(updateTour)
-.delete(authController.protect ,authController.restrictTo('admin'), deleteTour)
+.get(tourController.getSingleTour)
+.patch(tourController.updateTour)
+.delete(authController.protect ,authController.restrictTo('admin'), tourController.deleteTour)
 
 
 
