@@ -34,7 +34,7 @@ router
 .route('/:id')
 .get(getSingleTour)
 .patch(updateTour)
-.delete(deleteTour)
+.delete(authController.protect ,authController.restrictTo('admin'), deleteTour)
 
 
 
