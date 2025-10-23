@@ -35,23 +35,9 @@ exports.getAllTours = catchAsync( async (req,res, next)=>{
 exports.createTour = factory.createOne(Tour)
 exports.updateTour = factory.updateOne(Tour)
 exports.deleteTour = factory.deleteOne(Tour)
+// exports.getSingleTour = factory.getOne(Tour, {path:'reviews'})
+exports.getSingleTour = factory.getOne(Tour, { path: 'reviews'});
 
-exports.getSingleTour = catchAsync(async(req,res,next)=>{
-
- //That's how we populate the refrenece data 
-  const tour = await Tour.findById(req.params.id).populate('reviews')
-  if(!tour){
-   return next(new AppError('No Tour found with this ID', 404))
-  }
-     res.status(200).json({
-        status:"Success",
-        data:{
-            tour
-        }
-     })
-})
-
-//
 
 
 // Aggregation pipeline

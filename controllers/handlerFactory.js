@@ -65,4 +65,27 @@ exports.updateOne = Model =>
 
 
 
-// for create
+//
+exports.getOne = (Model, populateoptions) => catchAsync(async(req,res,next)=>{
+
+  let query =Model.findById(req.params.id)
+
+  if(populateoptions) query= query.populate(populateoptions)
+  
+ //That's how we populate the refrenece data 
+  const doc = await query
+  if(!doc){
+
+    
+   return next(new AppError('No document found with this ID', 404))
+  }
+     res.status(200).json({
+        status:"Success",
+        data:{
+            doc
+        }
+     })
+})
+
+
+
