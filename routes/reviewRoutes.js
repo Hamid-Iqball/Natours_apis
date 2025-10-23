@@ -13,4 +13,5 @@ router.route('/')
 
 router.route("/:id")
      .delete(reviewsController.deleteReview)
+     .patch(reviewsController.updateReview)
 module.exports = router

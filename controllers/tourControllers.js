@@ -62,28 +62,7 @@ exports.getSingleTour = catchAsync(async(req,res,next)=>{
 
 //
 
-exports.updateTour = catchAsync(async(req, res,next) => {
-  const tour = await Tour.findByIdAndUpdate(
-    req.params.id,
-    req.body,
-    {
-      new: true, // return the updated doc, not the old one
-      runValidators: true, // make mongoose validate before saving
-    }
-  );
-
- if(!tour){ 
-   return next(new AppError('No Tour found with this ID', 404))
-  }
-
-  res.status(200).json({
-    status: "success",
-    data: { tour },
-  });
-});
-
-
-
+exports.updateToue = factory.updateOne(Tour)
 exports.deleteTour = factory.deleteOne(Tour)
 
 // Aggregation pipeline
