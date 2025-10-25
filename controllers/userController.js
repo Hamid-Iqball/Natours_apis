@@ -54,12 +54,12 @@ exports.deleteMe  =catchAsync(async (req,res,next)=>{
         status:'success'
     })
 })
-// exports.createUser = factory.createOne(User)
-// exports.getUser = factory.getOne(User)
+
+//for create user please use signUp route
 
 
 
 //Do not update passwords with this
-
 exports.updateUser = factory.updateOne(User)
 exports.deleteUser = factory.deleteOne(User)
+exports.getSingleUser = factory.getOne(User)

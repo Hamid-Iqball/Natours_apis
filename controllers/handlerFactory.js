@@ -76,7 +76,6 @@ exports.getOne = (Model, populateoptions) => catchAsync(async(req,res,next)=>{
   const doc = await query
   if(!doc){
 
-    
    return next(new AppError('No document found with this ID', 404))
   }
      res.status(200).json({

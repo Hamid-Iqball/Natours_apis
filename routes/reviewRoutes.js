@@ -16,10 +16,12 @@ router
 
 router
   .route('/:id')
+  .get(reviewsController.getSingleReview)
   .delete(
     authController.protect,                 // don’t let randos delete
     authController.restrictTo('admin', 'user'),
-    reviewsController.deleteReview
-  ).patch(reviewsController.updateReview)
+    reviewsController.deleteReview)
+  .patch(reviewsController.updateReview)
+
 
 module.exports = router;
