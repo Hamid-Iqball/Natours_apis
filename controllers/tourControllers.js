@@ -16,22 +16,7 @@ exports.aliasTopTours = (req,res,next)=>{
 }
 
 
-exports.getAllTours = catchAsync( async (req,res, next)=>{
-
-    const features = new APIFeatures(Tour.find(),req.query).filter().sort().limitFields().pagination()
-    //Execute Query
-    const tours = await features.query
-    
-    res.status(200).json({
-      status:'success',
-      results:tours.length,
-      data:{tours}
-      
-    })
-  
-})
-
-
+exports.getAllTours = factory.getAll(Tour)
 exports.createTour = factory.createOne(Tour)
 exports.updateTour = factory.updateOne(Tour)
 exports.deleteTour = factory.deleteOne(Tour)
