@@ -22,19 +22,20 @@ router.use("/:tourId/reviews", reviewRouter) //mounting the router
 
 
 router.route('/tour_Stats').get(tourController.getTourStates)
-router.route('/monthly-plan/:year').get(tourController.getMonthlyPlan)
+router.route('/monthly-plan/:year')
+.get(authController.protect, authController.restrictTo('admin', 'lead-guide' , 'guide'), tourController.getMonthlyPlan)
 
-router.route("/top-5-cheap").get(tourController.aliasTopTours, tourController.getAllTours)
+router.route("/top-5-cheap").get(authController.protect, authController.restrictTo('admin'), tourController.aliasTopTours, tourController.getAllTours)
 
 router
 .route('/')
 .get(tourController.getAllTours)
-.post(tourController.createTour)
+.post(authController.protect, authController.restrictTo('admin'), tourController.createTour)
 
 router
 .route('/:id')
 .get(tourController.getSingleTour)
-.patch(tourController.updateTour)
+.patch(authController.protect, authController.restrictTo('admin'), tourController.updateTour)
 .delete(authController.protect ,authController.restrictTo('admin'), tourController.deleteTour)
 
 

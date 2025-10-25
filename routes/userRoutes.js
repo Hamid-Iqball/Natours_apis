@@ -13,26 +13,26 @@ const router  =express.Router()
 
 router.post('/signUp' , authController.signUp)
 router.post("/login", authController.login)
-
-
-router.get("/me", authController.protect, usercontroller.getMe, usercontroller.getSingleUser)
 router.post("/forgotPassword",  authController.forgotPassword)
 router.patch("/resetPassword/:token",  authController.resetPassword)
-router.patch("/updateMyPassword",authController.protect, authController.updatePassword)
-router.patch("/updateMe",authController.protect, usercontroller.updateMe)
-router.delete("/deleteMe", authController.protect,  usercontroller.deleteMe )
 
 
-router
+router.use(authController.protect)// all the routes that comes after this middleware will be protected by this middleware
+
+router.get("/me", usercontroller.getMe, usercontroller.getSingleUser)
+router.patch("/updateMyPassword",authController.updatePassword)
+router.patch("/updateMe", usercontroller.updateMe)
+router.delete("/deleteMe",  usercontroller.deleteMe )
+
+router.use(authController.restrictTo('admin'))
+
+router      
 .route("/")
-
-.get(authController.protect,usercontroller.getAllUsers)
+.get(usercontroller.getAllUsers)
 router
 .route("/:id")
 .get(usercontroller.getSingleUser)
 .patch(usercontroller.updateUser)
-.delete(authController.protect,
-      authController.restrictTo('admin' , 'lead-guide'), 
-      usercontroller.deleteUser)
+.delete(usercontroller.deleteUser)
 
 module.exports = router
