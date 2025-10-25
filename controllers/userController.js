@@ -12,6 +12,11 @@ const newObj = {}
 }
 
 
+exports.getMe = (req,res,next)=>{
+    req.params.id = req.user.id
+    next()
+}
+
  // this is for the currently authenticated user
 exports.updateMe = catchAsync(async(req,res,next)=>{
     //1) Create an error if the user is updating the password data
